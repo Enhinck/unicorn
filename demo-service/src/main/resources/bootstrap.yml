@@ -1,0 +1,59 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: @artifactId@
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    sentinel:
+      transport:
+        dashboard: localhost:8080 #指定Sentinel DashBoard服务地址
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ioc_base?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username:
+    password:
+
+csp:
+  sentinel:
+    dashboard:
+      server: localhost:8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+seata:
+  enabled: true
+  # 事务群组（可以每个应用独立取名，也可以使用相同的名字）
+  tx-service-group: tx_group_test
+  enable-auto-data-source-proxy: true
+  client:
+    rm-report-success-enable: true
+    # 异步提交缓存队列长度（默认10000）
+    rm-async-commit-buffer-limit: 1000
+    # 一阶段全局提交结果上报TC重试次数（默认1次，建议大于1）
+    tm-commit-retry-count:   3
+    # 一阶段全局回滚结果上报TC重试次数（默认1次，建议大于1）
+    tm-rollback-retry-count: 3
+    support:
+      # 数据源自动代理开关（默认false关闭）
+      spring-datasource-autoproxy: true
+  service:
+    vgroup-mapping:
+      tx_group_test: default
+    grouplist:
+      default: 127.0.0.1:8091
+

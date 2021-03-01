@@ -1,0 +1,12 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    gateway:
+      routes:
+        - id: demo-service
+          uri: lb://demo-service
+          predicates:
+           - Path=/demo-service/**
+          filters:
+            - StripPrefix=1
